@@ -22,5 +22,67 @@ Nuovo .txt dove scrivere  le query SQL per:
     SELECT COUNT(*) FROM `departments` (12)
 
 8. Quanti sono gli insegnanti che non hanno un numero di telefono?
-    SELECT COUNT(*) FROM `teachers` WHERE `phone`IS NULL (50)
+    SELECT COUNT(*) FROM `teachers` WHERE `phone` IS NULL (50)
+
+////// 30 luglio in classe
+9. Selezionare tutti i degrees (corsi di laurea) joinando i dati dei vari dipartimenti.
+        SELECT * FROM `degrees` INNER JOIN `departments` ON `departments`.`id` = `degrees`.`department_id`
+        (unisci due colonne, una dentro departement l altra dentro degrees)
+
+10. Selezionare tutti gli studenti in una join con exam_student, mostrando però solo il nome e il cognome dello studente e il voto.
+        SELECT name, surname, vote  FROM students INNER JOIN exam_student ON students.id = exam_student.student_id
+
+////// 30 luglio last exercise before holidays 
+
+    1. Contare quanti iscritti ci sono stati ogni anno  
+        SELECT COUNT(*) FROM `students` GROUP BY `students`.`enrolment_date` ASC
+
+    2. Contare gli insegnanti che hanno l’ufficio nello stesso edificio
+        SELECT COUNT(*) FROM `teachers`  GROUP BY `teachers`.`office_address`
+
+    3. Calcolare la media dei voti di ogni appello d’esame
+        SELECT AVG(vote) FROM `exam_student`   AVG(vote) 17.9573
+
+    4. Contare quanti corsi di laurea ci sono per ogni dipartimento
+        SELECT department_id COUNT department_id FROM degrees GROUP BY department_id
+       ---SELECT COUNT(*) FROM `degrees` INNER JOIN `departments` ON `departments.id` = `degrees.department_id` [75]
+
+    5. Selezionare tutti gli studenti iscritti al Corso di Laurea in Economia
+        SELECT * FROM `students` INNER JOIN `degrees` ON `degrees`.`id`= 53
+
+    6. Selezionare tutti i Corsi di Laurea del Dipartimento di Neuroscienze
+        SELECT * FROM `degrees` INNER JOIN `departments` ON `departments`.`id` = `degrees`.`department_id` WHERE `department_id`= 7 
+
+    7. Selezionare tutti i corsi in cui insegna Fulvio Amato (id=44)   
+       TRY THIS -> SELECT * FROM `degrees` INNER JOIN `course_teacher` ON `degrees`.`id` = `course_teacher`.`teacher_id` WHERE `teacher_id` = 44 
+       (COL COUNT ESCONO 11)
+
+    8. Selezionare tutti gli studenti con i dati relativi al corso di laurea a cui sono iscritti e il relativo dipartimento, in ordine alfabetico per cognome e nome
+        SELECT * FROM `students` 
+        LEFT JOIN `degrees` ON `degrees`.`id` = `students`.`degree_id` 
+        LEFT JOIN `departments` ON `departments`.`id` = `degrees`.`department_id` 
+        ORDER BY students.surname, students.name ASC
     
+    9. Selezionare tutti i corsi di laurea con i relativi corsi e insegnanti     
+            SELECT * FROM `degrees` 
+            LEFT JOIN `courses` 
+            ON `degrees`.`id` = `courses`.`degree_id` 
+            LEFT JOIN `course_teacher` 
+            ON `course_teacher`.`course_id` = `courses`.`id`
+            LEFT JOIN `teachers`
+            ON `course_teacher`.`teacher_id` = `teachers`.`id`
+
+    10. Selezionare tutti i docenti che insegnano nel Dipartimento di Matematica (54) [dipartimento di mat id=5]
+        SELECT *  FROM `teachers`
+        LEFT JOIN `course_teacher`
+        ON `teachers`.`id`= `course_teacher`.`teacher_id`
+        LEFT JOIN `courses`                                 //ho mostrato anche il relativo e 
+                                                            //singolo corso di laurea
+        ON `courses`.`id`= `course_teacher`.`course_id`
+        LEFT JOIN `degrees`
+        ON `degrees`.`id`= `courses`.`degree_id`
+        LEFT JOIN `departments`
+        ON `departments`.`id` = `degrees`.`department_id` WHERE `department_id`= 5
+
+
+    BONUS: Selezionare per ogni studente quanti tentativi d’esame ha sostenuto per superare ciascuno dei suoi esami
